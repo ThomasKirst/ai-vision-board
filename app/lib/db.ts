@@ -19,6 +19,14 @@ export async function openDb() {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    await db.exec(`
+      CREATE TABLE IF NOT EXISTS vision_board (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        prompt_id INTEGER,
+        position INTEGER,
+        FOREIGN KEY (prompt_id) REFERENCES prompts (id)
+      )
+    `);
   }
   return db;
 }
