@@ -15,19 +15,3 @@ We need to create a function to store a prompt and an image in the database.
 We need to create a function to retrieve all prompts from the database.
 
 They will be displayed in a table with the prompt, resolution, quality, and image.
-
-Technical considerations:
-
-We will use Next.js as the framework.
-
-We use the App Router.
-
-Make use of React Server Components. Avoid using fetch in useEffect hooks.
-
-We will use shadcn/ui for the UI.
-
-We will use SQLite for the database.
-
-We don´t want to use any ORM.
-
-Make sure to add all node package dependencies and shadcn components to the package.json file.

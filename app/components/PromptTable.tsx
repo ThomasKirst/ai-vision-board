@@ -4,6 +4,10 @@ import ClientSideModal from "./ClientSideModal";
 import { deletePrompt } from "@/app/actions/deletePrompt";
 import { Button } from "@/components/ui/button";
 import { revalidatePath } from "next/cache";
+import {
+  addToVisionBoard,
+  removeFromVisionBoard,
+} from "@/app/actions/visionBoardActions";
 
 interface Prompt {
   id: number;
@@ -12,11 +16,17 @@ interface Prompt {
   quality: number;
   image_url: string;
   created_at: string;
+  on_vision_board: boolean;
 }
 
 async function getPrompts(): Promise<Prompt[]> {
   const db = await openDb();
-  return db.all("SELECT * FROM prompts ORDER BY created_at DESC");
+  return db.all(`
+    SELECT p.*, CASE WHEN vb.id IS NULL THEN 0 ELSE 1 END as on_vision_board
+    FROM prompts p
+    LEFT JOIN vision_board vb ON p.id = vb.prompt_id
+    ORDER BY p.created_at DESC
+  `);
 }
 
 export default async function PromptTable() {
@@ -25,6 +35,16 @@ export default async function PromptTable() {
   async function handleDelete(id: number) {
     "use server";
     await deletePrompt(id);
+    revalidatePath("/");
+  }
+
+  async function handleVisionBoard(id: number, onVisionBoard: boolean) {
+    "use server";
+    if (onVisionBoard) {
+      await removeFromVisionBoard(id);
+    } else {
+      await addToVisionBoard(id);
+    }
     revalidatePath("/");
   }
 
@@ -64,8 +84,30 @@ export default async function PromptTable() {
               </td>
               <td className="py-2 px-4 border-b">
                 <form action={handleDelete.bind(null, prompt.id)}>
-                  <Button type="submit" variant="destructive" size="sm">
+                  <Button
+                    type="submit"
+                    variant="destructive"
+                    size="sm"
+                    className="mr-2"
+                  >
                     Delete
+                  </Button>
+                </form>
+                <form
+                  action={handleVisionBoard.bind(
+                    null,
+                    prompt.id,
+                    prompt.on_vision_board
+                  )}
+                >
+                  <Button
+                    type="submit"
+                    variant={prompt.on_vision_board ? "secondary" : "default"}
+                    size="sm"
+                  >
+                    {prompt.on_vision_board
+                      ? "Remove from Vision Board"
+                      : "Add to Vision Board"}
                   </Button>
                 </form>
               </td>
