@@ -14,6 +14,7 @@ Create a `.env.local` file with the following variables:
 
 ```
 REPLICATE_API_TOKEN=r8_... # Enter your Replicate API token here
+REPLICATE_MODEL=black-forest-labs/flux-dev # Enter your Replicate model here
 ```
 
 ## Database
