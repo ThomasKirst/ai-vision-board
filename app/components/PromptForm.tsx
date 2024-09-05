@@ -50,7 +50,7 @@ export default function PromptForm() {
           <option value="256x256">256x256</option>
           <option value="512x512">512x512</option>
           <option value="1024x1024">1024x1024</option>
-          <option value="1440x900">1440x900</option>
+          <option value="1440x810">1440x810 (16:9)</option>
         </select>
       </div>
       <div>

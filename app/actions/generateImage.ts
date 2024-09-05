@@ -52,11 +52,22 @@ export async function generateImage({
   }
 
   try {
+    const [width, height] = resolution.split("x").map(Number);
+    let aspectRatio: string;
+    if (width === 1440 && height === 810) {
+      aspectRatio = "16:9";
+    } else if (width === height) {
+      aspectRatio = "1:1";
+    } else {
+      aspectRatio = "custom";
+    }
+
     const output = (await replicate.run(model, {
       input: {
         prompt: prompt,
-        width: parseInt(resolution.split("x")[0]),
-        height: parseInt(resolution.split("x")[1]),
+        aspect_ratio: aspectRatio,
+        width: width,
+        height: height,
         output_quality: quality,
       },
     })) as string[];
